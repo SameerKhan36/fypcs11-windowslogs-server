@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const http = require("http");
+const axios = require("axios");
 
 const app = express();
 const server = http.createServer(app);
@@ -32,37 +33,24 @@ io.on('connection', (socket) => {
   
   socket.on("windows-logs", (data) => {
     console.log("=== creating stream ===");
-    console.log(data)
-    fs.watchFile('C:/Windows/System32/winevt/Logs/System.evtx', (curr, prev) => {
-      if (curr.mtime !== prev.mtime ) {
-        console.log(`Change Detected!`); 
-        exec(`wevtutil.exe qe System /q:"*" /f:text /rd:true /c:1>  ${logsFilePath}`, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
-            return;
-          }})
-        fs.createReadStream("D:/Windows Logs/windows-connector-server/system-logs.txt")
-        .on('data', (chunk) => {
-          const lines = chunk.toString().split('\n').slice(10);
-          const resLines = {resLine: lines}
-          socket.emit('windows-logs', resLines);
-        })
+    // console.log(data)
+    // fs.watchFile('C:/Windows/System32/winevt/Logs/System.evtx', (curr, prev) => {
+    //   if (curr.mtime !== prev.mtime ) {
+    //     console.log(`Change Detected!`); 
+    //     exec(`wevtutil.exe qe System /q:"*" /f:text /rd:true /c:1>  ${logsFilePath}`, (error, stdout, stderr) => {
+    //       if (error) {
+    //         console.error(`exec error: ${error}`);
+    //         return;
+    //       }})
+    //     fs.createReadStream("C:/Users/dell/Documents/Github/fypcs11-windowslogs-server/system-logs.txt")
+    //     .on('data', (chunk) => {
+    //       const lines = chunk.toString().split('\n').slice(10);
+    //       const resLines = {resLine: lines}
+    //       socket.emit('windows-logs', resLines);
+    //     })
 
-      }});
-    // fs.createReadStream(`${logsFilePath}`)
-    // .on('data', (chunk) => {
-    //   const lines = chunk.toString().split('\n').slice(-10);
-    // //   // console.log(lines)
-    // for (let i = 0; i < 10; i++) {
-    //   setTimeout(() => {
-    //     // console.log(typeof records[i])
-    //     if (output) socket.emit('windows-logs', output[i]);
-    //     console.log(output);
-    //     }, i * 1500);
-    //   // socket.emit('mysql-logs', records[i])
-    //   }
-    // })
-    socket.emit('windows-logs', 'hello again')
+    //   }});
+    // socket.emit('windows-logs', 'hello again')
   })
 
   socket.on("disconnect", () => {
@@ -87,10 +75,16 @@ app.post('/windowslogs', (req, res) => {
       }
       
       // Send the logs to the front end using res.send
-      const events = [];
+      // const events = [];
       const output = data.toString().split('\r\n\r');
       // const lines = output.split('');
       if (output.pop()) {
+        axios.post("http://172.104.174.187:4000/api/set/arch-logs", 
+        {
+              user_id: 15,
+              data_src: "windows",
+              log_data: data
+        });
         res.send(output);
       }
     });
