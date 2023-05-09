@@ -1,0 +1,15 @@
+Event[0]:
+  Log Name: System
+  Source: Service Control Manager
+  Date: 2023-05-08T21:48:25.5050000Z
+  Event ID: 7040
+  Task: N/A
+  Level: Information
+  Opcode: N/A
+  Keyword: Classic
+  User: S-1-5-18
+  User Name: NT AUTHORITY\SYSTEM
+  Computer: DESKTOP-M62KHEU
+  Description: 
+The start type of the Background Intelligent Transfer Service service was changed from demand start to auto start.
+

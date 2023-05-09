@@ -2,10 +2,10 @@
   "name": "v1",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "windowslogs-server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon logger.js"
+    "start": "nodemon windowslogs-server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,17 +15,12 @@
     "cors": "^2.8.5",
     "event-stream": "^4.0.1",
     "express": "^4.18.2",
-    "log4js": "^6.7.1",
     "mysql": "^2.18.1",
-    "node-powershell": "^5.0.1",
     "node-windows": "^1.0.0-beta.8",
     "nodemon": "^2.0.20",
-    "simple-syslog-server": "^1.0.0",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
-    "text-miner": "^2.0.0",
-    "winston": "^3.8.2",
-    "winston-transport": "^4.5.0",
-    "winston-winlog3": "^1.1.2"
+    "windows-event-reader": "^1.0.1",
+    "windows-eventlog": "^2.0.0"
   }
 }
