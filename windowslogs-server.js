@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const http = require("http");
 const axios = require("axios");
+const moment = require("moment");
 
 const app = express();
 const server = http.createServer(app);
@@ -61,7 +62,7 @@ io.on('connection', (socket) => {
 
 app.post('/windowslogs', (req, res) => {
   // Command to retrieve the system logs and save them to a file
-  const command = `wevtutil qe System /q:"*" /rd:true /c:10 /f:text > ${logsFilePath}`;
+  const command = `wevtutil qe System /q:"*" /rd:true /c:50 /f:text > ${logsFilePath}`;
   // const events = [];
 
   // Execute the command using child_process
@@ -79,12 +80,20 @@ app.post('/windowslogs', (req, res) => {
       const output = data.toString().split('\r\n\r');
       // const lines = output.split('');
       if (output.pop()) {
+        const currentTime = moment().format('MMMM Do YYYY hh:mm:ss a');
+        axios.post("http://172.104.174.187:4000/api/add-history", 
+        {
+          id: 15, 
+          con_type: "windows", 
+          timestamp: currentTime
+        });
         axios.post("http://172.104.174.187:4000/api/set/arch-logs", 
         {
-              user_id: 15,
-              data_src: "windows",
-              log_data: data
+          user_id: 15,
+          data_src: "windows",
+          log_data: data
         });
+        // console.log(currentTime)
         res.send(output);
       }
     });
